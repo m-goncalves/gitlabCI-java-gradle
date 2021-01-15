@@ -19,5 +19,6 @@ smoke_test:
   script:
     - tree
     - java -jar ./build/libs/car-api.jar
+    - echo $?
 #    - sleep 30
 #    - curl http://localhost:5000/actuator/health | grep "UP"
