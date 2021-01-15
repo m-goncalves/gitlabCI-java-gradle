@@ -1,3 +1,6 @@
+variables:
+  ARTIFACT_NAME: cars-api.jar
+
 stages:
   - build
   - test
@@ -17,7 +20,7 @@ smoke_test:
   before_script:
     - apk --no-cache add curl
   script:
-    - java -jar ./build/libs/cars-api.jar &
+    - java -jar ./build/libs/$ARTIFACT_NAME &
     - sleep 30
     - curl http://localhost:5000/actuator/health | grep "UP"
 
@@ -28,4 +31,4 @@ deploy:
     entrypoint: [""]
   script:
     - aws configure set region sa-east-1
-    - aws s3 cp ./build/libs/cars-api.jar s3://$S3_BUCKET
+    - aws s3 cp ./build/libs/$ARTIFACT_NAME s3://$S3_BUCKET/$ARTIFACT_NAME
