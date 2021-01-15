@@ -11,7 +11,7 @@ build:
     paths:
       - ./build/libs/
 
-  smoke test:
+  smoke_test:
     stage: test
     image: openjdk:12-alpine
     before_script:
