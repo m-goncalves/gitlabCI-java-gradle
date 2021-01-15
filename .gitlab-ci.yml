@@ -18,8 +18,7 @@ smoke_test:
     - apk --no-cache add tree
   script:
     - tree
-    - java -jar ./build/libs/car-api.jar
-    - echo $?
     - pwd
+    - java -jar ./build/libs/car-api.jar
 #    - sleep 30
 #    - curl http://localhost:5000/actuator/health | grep "UP"
