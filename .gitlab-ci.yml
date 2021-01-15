@@ -21,10 +21,10 @@ smoke_test:
     - sleep 30
     - curl http://localhost:5000/actuator/health | grep "UP"
 
-  deploy:
-    stage: deploy
-    image: banst/awscli
-    entrypoint: [""]
-    script:
-      - aws configure set region sa-east-1
-      - aws s3 cp ./build/libs.cars-api.jar s3://$S3_BUCKET
+deploy:
+  stage: deploy
+  image: banst/awscli
+  entrypoint: [""]
+  script:
+    - aws configure set region sa-east-1
+    - aws s3 cp ./build/libs.cars-api.jar s3://$S3_BUCKET
