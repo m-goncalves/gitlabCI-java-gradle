@@ -23,8 +23,9 @@ smoke_test:
 
 deploy:
   stage: deploy
-  image: banst/awscli
-  entrypoint: [""]
+  image:
+    name: banst/awscli
+    entrypoint: [""]
   script:
     - aws configure set region sa-east-1
     - aws s3 cp ./build/libs.cars-api.jar s3://$S3_BUCKET
