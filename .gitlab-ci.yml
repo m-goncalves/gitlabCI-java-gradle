@@ -20,5 +20,6 @@ smoke_test:
     - tree
     - java -jar ./build/libs/car-api.jar
     - echo $?
+    - pwd
 #    - sleep 30
 #    - curl http://localhost:5000/actuator/health | grep "UP"
