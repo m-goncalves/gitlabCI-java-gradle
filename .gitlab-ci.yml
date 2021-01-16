@@ -1,5 +1,5 @@
 variables:
-  ARTIFACT_NAME: cars-api-v$CI_PIPELINE_IID.jar
+  ARTIFACT_NAME: cars-api.jar
 
 stages:
   - build
@@ -31,4 +31,4 @@ deploy:
     entrypoint: [""]
   script:
     - aws configure set region sa-east-1
-    - aws s3 cp ./build/libs/$ARTIFACT_NAME s3://$BUCKET/$ARTIFACT_NAME
+    - aws s3 cp ./build/libs/$ARTIFACT_NAME s3://unique-cars-api-deployment/$ARTIFACT_NAME
