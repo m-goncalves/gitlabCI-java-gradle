@@ -6,6 +6,7 @@ stages:
   - build
   - test
   - deploy
+  - post deploy
 build:
   stage: build
   image: openjdk:12-alpine
@@ -19,7 +20,7 @@ build:
     paths:
       - ./build/libs/
 
-smoke_test:
+smoke test:
   stage: test
   image: openjdk:12-alpine
   before_script:
@@ -29,6 +30,27 @@ smoke_test:
     - sleep 20
     - curl http://localhost:5000/actuator/health | grep "UP"
 
+code quality:
+  stage: test
+  image: openjdk:12-alpine
+  script:
+    - ./gradlew pmdMain pmdTest
+  artifacts:
+    when: always
+    paths:
+      - build/reports/pmd
+
+unit tests:
+  stage: test
+  image: openjdk:12-alpine
+  script:
+    - ./gradlew test
+  artifacts:
+    when: always
+    paths:
+      - build/reports/tests/test
+    reports:
+      - junit: build/test-results/test/*.xml
 deploy:
   stage: deploy
   image:
@@ -45,3 +67,26 @@ deploy:
     - sleep 50
     - curl http://$CNAME/actuator/info | grep $CI_PIPELINE_IID
     - curl http://$CNAME/actuator/info/health | grep "UP"
+
+postdeployment test:
+  stage: post deploy
+  image: vdespa/newman
+  entrypoint: [""]
+  script:
+    - newman --version
+    - newman run Cars+Api.postman_collection.json --environment Production.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export "newman/report.html" --reporter-junit-export "newman/report.xml"
+  artifacts:
+    when: always
+    paths:
+      - newman
+    reports:
+      - junit: newman/report.xml
+
+pages:
+  stage: publishing
+  script:
+    - mkdir public
+    - mv newman/report.html public/index.html
+  artifacts:
+    paths:
+      - public
