@@ -7,6 +7,7 @@ stages:
   - test
   - deploy
   - post deploy
+  - publishing
 build:
   stage: build
   image: openjdk:12-alpine
@@ -50,7 +51,7 @@ unit tests:
     paths:
       - build/reports/tests/test
     reports:
-      - junit: build/test-results/test/*.xml
+      junit: build/test-results/test/*.xml
 deploy:
   stage: deploy
   image:
@@ -68,10 +69,11 @@ deploy:
     - curl http://$CNAME/actuator/info | grep $CI_PIPELINE_IID
     - curl http://$CNAME/actuator/info/health | grep "UP"
 
-postdeployment test:
+post test:
   stage: post deploy
-  image: vdespa/newman
-  entrypoint: [""]
+  image:
+    name: vdespa/newman
+    entrypoint: [""]
   script:
     - newman --version
     - newman run Cars+Api.postman_collection.json --environment Production.postman_environment.json --reporters cli,htmlextra --reporter-htmlextra-export "newman/report.html" --reporter-junit-export "newman/report.xml"
@@ -80,7 +82,7 @@ postdeployment test:
     paths:
       - newman
     reports:
-      - junit: newman/report.xml
+      junit: newman/report.xml
 
 pages:
   stage: publishing
